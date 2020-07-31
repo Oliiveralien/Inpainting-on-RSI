@@ -9,10 +9,14 @@ Mask data: [DATA](https://drive.google.com/file/d/1p0Q1DO7J8Igj4-DZRonQhQOL2LsPG
 
 We also provide a simple tool `make_list.py`. Unzip and run it in the source folder.
 
+![All text](https://github.com/Oliiveralien/Inpainting-on-RSI/blob/master/pics/newSLC.png)
+
 ## Metrics Versus Epoch
 Run `tensorboard --logdir model_logs --port 6006` to view training progress.
 
-One can produce their own graphs through Tensroborad.
+Here are several evaluation indexes training on RSSCN7 dataset with first 15K epochs. 
+
+![All text](https://github.com/Oliiveralien/Inpainting-on-RSI/blob/master/pics/metrics.png)
 
 ## Note
 It is a model for inpainting task on remote sensing images. 
@@ -20,10 +24,10 @@ It is a model for inpainting task on remote sensing images.
 The idea is inspired with [Global & Local](https://dl.acm.org/doi/abs/10.1145/3072959.3073659), [GatedConv](https://arxiv.org/abs/1806.03589), [SA-GAN](http://proceedings.mlr.press/v97/zhang19d/zhang19d.pdf) and [Perceptual Loss](https://arxiv.org/abs/1603.08155).
 
 ## Setup
-conda environment with Pytorch
+Conda environment with Pytorch
 
 ## Training & Test
-coming soon...
+Coming soon...
 
 ## Evaluation on GLOPs and Parameters number
 GLOPs &= 1.52 + 0.38 + 39.64 = 41.54 GMacs
