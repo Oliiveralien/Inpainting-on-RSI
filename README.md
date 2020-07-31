@@ -16,6 +16,8 @@ Run `tensorboard --logdir model_logs --port 6006` to view training progress.
 
 Here are several evaluation indexes training on RSSCN7 dataset with first 15K epochs. 
 
+One can also visualize the diagrams with their own data and settings.
+
 ![All text](https://github.com/Oliiveralien/Inpainting-on-RSI/blob/master/pics/metrics.png)
 
 ## Note
@@ -25,6 +27,7 @@ The idea is inspired with [Global & Local](https://dl.acm.org/doi/abs/10.1145/30
 
 ## Setup
 Conda environment with Pytorch
+* `Tensorboard` here may require Tensorflow
 
 ## Training & Test
 Coming soon...
@@ -34,7 +37,7 @@ GLOPs &= 1.52 + 0.38 + 39.64 = 41.54 GMacs
 
 Param Number &= 4.94 + 4.94 + 6.05 = 15.93 M 
 
-One can also evaluate any model by running `flops_count.py`.
+One can also evaluate any model by running `./flops_count.py`.
 
 ## Code
 * We deactivate the local discriminator for SLC-off problem in `./models/sa_gan.py`. 
