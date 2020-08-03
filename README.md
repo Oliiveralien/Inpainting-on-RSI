@@ -33,9 +33,9 @@ Conda environment with Pytorch
 Coming soon...
 
 ## Evaluation on FLOPs and Parameters number
-FLOPs &= 1.52 + 0.38 + 39.64 = 41.54 GMacs
+FLOPs = 1.52 + 0.38 + 39.64 = 41.54 GMacs
 
-Param Number &= 4.94 + 4.94 + 6.05 = 15.93M
+Param Number = 4.94 + 4.94 + 6.05 = 15.93M
 
 One can also evaluate any model by running `./flops_count.py`.
 
