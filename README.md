@@ -32,8 +32,8 @@ Conda environment with Pytorch
 ## Training & Test
 Coming soon...
 
-## Evaluation on FLOPs and Parameters number
-FLOPs = 1.52 + 0.38 + 39.64 = 41.54 GMacs
+## Evaluation on GMacs and Parameters number
+GMacs = 1.52 + 0.38 + 39.64 = 41.54
 
 Param Number = 4.94 + 4.94 + 6.05 = 15.93M
 
