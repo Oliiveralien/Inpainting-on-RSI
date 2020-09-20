@@ -30,7 +30,7 @@ Conda environment with Pytorch
 * `Tensorboard` here may require Tensorflow
 
 ## Training & Test
-Coming soon...
+Train `train.py` and `test.py`.
 
 ## Evaluation on GMacs and Parameters number
 GMacs = 1.52 + 0.38 + 39.64 = 41.54
@@ -43,8 +43,6 @@ One can also evaluate any model by running `./flops_count.py`.
 * We deactivate the local discriminator for SLC-off problem in `./models/sa_gan.py`. 
 * One can train the model on other data and settings in `./config/inpaint_sagan.yml`.
 * We'll upload a pretrained model asap.
-
-The code will be released soon... 
 
 ## Contact
 Please contact me if there is any question. (Chao Wang oliversavealien@gmail.com)
