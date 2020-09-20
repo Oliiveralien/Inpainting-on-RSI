@@ -30,7 +30,7 @@ Conda environment with Pytorch
 * `Tensorboard` here may require Tensorflow
 
 ## Training & Test
-Train `train.py` and `test.py`.
+Try `train.py` and `test.py`.
 
 ## Evaluation on GMacs and Parameters number
 GMacs = 1.52 + 0.38 + 39.64 = 41.54
