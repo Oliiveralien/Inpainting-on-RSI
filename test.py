@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 #from models.sa_gan_l2h_unet import InpaintRUNNet, InpaintSADirciminator
-from models.sa_gan import InpaintSANet, InpaintSADirciminator
+from models.sa_gan import InpaintSANet, InpaintSADirciminator, MultiDiscriminator
 from models.loss import SNDisLoss, SNGenLoss, ReconLoss, PerceptualLoss, StyleLoss
 from util.logger import TensorBoardLogger
 from util.config import Config
@@ -189,16 +189,13 @@ def main():
     whole_model_path = 'model_logs/{}'.format(config.MODEL_RESTORE)
     nets = torch.load(whole_model_path)
     netG_state_dict, netD_state_dict = nets['netG_state_dict'], nets['netD_state_dict']
-    if config.NETWORK_TYPE == "l2h_unet":
-        netG = InpaintRUNNet(n_in_channel=config.N_CHANNEL)
-        netG.load_state_dict(netG_state_dict)
 
-    elif config.NETWORK_TYPE == 'sa_gated':
-        netG = InpaintSANet()
-        load_consistent_state_dict(netG_state_dict, netG)
-        #netG.load_state_dict(netG_state_dict)
+    netG = InpaintSANet()
+    load_consistent_state_dict(netG_state_dict, netG)
+    #netG.load_state_dict(netG_state_dict)
 
-    netD = InpaintSADirciminator()
+    # netD = InpaintSADirciminator()
+    netD = MultiDiscriminator()
     netVGG = vgg16_bn(pretrained=True)
 
 
