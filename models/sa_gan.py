@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torch.autograd import Variable
-from .spectral import SpectralNorm
-from .networks import GatedConv2dWithActivation, GatedDeConv2dWithActivation, SNConvWithActivation, get_pad
+from networks import GatedConv2dWithActivation, GatedDeConv2dWithActivation, SNConvWithActivation, get_pad
+from utils import gen_hole_area, crop
 
 class Self_Attn(nn.Module):
     """ Self attention Layer"""
@@ -42,6 +42,14 @@ class Self_Attn(nn.Module):
             return out ,attention
         else:
             return out
+
+class Concatenate(nn.Module):
+    def __init__(self, dim=-1):
+        super(Concatenate, self).__init__()
+        self.dim = dim
+
+    def forward(self, x):
+        return torch.cat(x, dim=self.dim)
 
 class InpaintSANet(torch.nn.Module):
     """
@@ -157,3 +165,85 @@ class InpaintSADirciminator(nn.Module):
         x = x.view((x.size(0),-1))
         #x = self.linear(x)
         return x
+
+class LocalDiscriminator(nn.Module):
+    def __init__(self):
+        super(LocalDiscriminator, self).__init__()
+        cnum = 32
+        self.output_shape = (1024,)
+        self.discriminator_net = nn.Sequential(
+            SNConvWithActivation(5, 2*cnum, 4, 2, padding=get_pad(128, 5, 2)),
+            SNConvWithActivation(2*cnum, 4*cnum, 4, 2, padding=get_pad(64, 5, 2)),
+            SNConvWithActivation(4*cnum, 8*cnum, 4, 2, padding=get_pad(32, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(16, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(8, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(4, 5, 2)),
+        )
+        self.linear = nn.Linear(8*cnum*2*2, 1)
+
+    def forward(self, input):
+        x = self.discriminator_net(input)
+        x = x.view((x.size(0),-1))
+        #x = self.linear(x)
+        return x
+
+class GlobalDiscriminator(nn.Module):
+    def __init__(self):
+        super(GlobalDiscriminator, self).__init__()
+        cnum = 32
+        self.output_shape = (1024,)
+        self.discriminator_net = nn.Sequential(
+            SNConvWithActivation(5, 2*cnum, 4, 2, padding=get_pad(256, 5, 2)),
+            SNConvWithActivation(2*cnum, 4*cnum, 4, 2, padding=get_pad(128, 5, 2)),
+            SNConvWithActivation(4*cnum, 8*cnum, 4, 2, padding=get_pad(64, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(32, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(16, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(8, 5, 2)),
+            SNConvWithActivation(8*cnum, 8*cnum, 4, 2, padding=get_pad(4, 5, 2)),
+        )
+        self.linear = nn.Linear(8*cnum*2*2, 1)
+
+    def forward(self, input):
+        x = self.discriminator_net(input)
+        x = x.view((x.size(0),-1))
+        #x = self.linear(x)
+        return x
+
+class MultiDiscriminator(nn.Module):
+    def __init__(self, local_dis_size, random_bbox_size, dis_mode='cat'):
+        super(MultiDiscriminator, self).__init__()
+        self.model_ld = LocalDiscriminator()
+        self.model_gd = GlobalDiscriminator()
+        self.local_size = local_dis_size
+        self.mask_size = random_bbox_size
+        self.dis_mode = dis_mode
+        # input_shape: [(None, 1024), (None, 1024)]
+        in_features = self.model_ld.output_shape[-1] + self.model_gd.output_shape[-1]
+        self.concat = Concatenate(dim=-1)
+        # input_shape: (None, 2048)
+        self.linear1 = nn.Linear(in_features, 1)
+        self.linear2 = nn.Linear(self.model_ld.output_shape[-1], 1)
+        self.linear3 = nn.Linear(self.model_gd.output_shape[-1], 1)
+        self.act = nn.Sigmoid()
+        # output_shape: (None, 1)
+
+    def forward(self, x):
+        x_gd = x
+        ld_area = gen_hole_area(self.local_size, self.mask_size)
+        x_ld = crop(x, ld_area)
+        x_ld = self.model_ld(x_ld)
+        x_gd = self.model_gd(x_gd)
+        if self.dis_mode == 'cat':
+            out = self.act(self.linear1(self.concat([x_ld, x_gd])))
+        elif self.dis_mode == 'mix':
+            out = self.act(self.linear2(x_ld)) + self.act(self.linear3(x_ld))
+        else:
+            raise NotImplementedError('dis_mode [%s] is not implemented', self.dis_mode)
+        return out
+
+if __name__ == '__main__':
+    a = torch.randn(32,5,256,256)
+    multidis = MultiDiscriminator([128,128],[128,128],'mix')
+    print(multidis.dis_mode)
+    out = multidis(a)
+    print(out.shape)
