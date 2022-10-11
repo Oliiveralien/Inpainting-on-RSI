@@ -4,7 +4,7 @@ import cv2
 import os
 from torchvision import transforms
 from PIL import Image
-from .base_dataset import BaseDataset
+from base_dataset import BaseDataset
 from torch.utils.data import Dataset, DataLoader
 import pickle as pkl
 
@@ -19,7 +19,7 @@ class InpaintDataset(BaseDataset):
                                 generate mask. And the key represent the mask type (e.g. {"bbox":"bbox_flist.txt", "seg":..., "random":None})
         resize_shape(tuple): The shape of the final image (default:(256,256))
         transforms_oprs(list) : Determine which transformation used on the imgae (default:['random_crop', 'to_tensor'])
-        random_bbox_shape(tuple): if use random bbox mask, it define the shape of the mask (default:(32,32))
+        random_bbox_size(tuple): if use random bbox mask, it define the size of the mask (default:(32,32))
         random_bbox_margin(tuple): if use random bbox, it define the margin of the bbox which means the distance between the mask and the margin of the image
                                     (default:(64,64))
     Return:
@@ -27,7 +27,7 @@ class InpaintDataset(BaseDataset):
     """
     def __init__(self, img_flist_path, mask_flist_paths_dict,
                 resize_shape=(256, 256), transforms_oprs=['random_crop', 'to_tensor'],
-                random_bbox_shape=(32, 32), random_bbox_margin=(64, 64),
+                random_bbox_size=(128, 128), random_bbox_margin=(32, 32),
                 random_ff_setting={'img_shape':[256,256],'mv':5, 'ma':4.0, 'ml':40, 'mbw':10}, random_bbox_number=5):
 
         with open(img_flist_path, 'r') as f:
@@ -48,7 +48,7 @@ class InpaintDataset(BaseDataset):
                     # print(len(self.mask_paths[mask_type]))
 
         self.resize_shape = resize_shape
-        self.random_bbox_shape = random_bbox_shape
+        self.random_bbox_size = random_bbox_size
         self.random_bbox_margin = random_bbox_margin
         self.random_ff_setting = random_ff_setting
         self.random_bbox_number = random_bbox_number
@@ -100,7 +100,7 @@ class InpaintDataset(BaseDataset):
         if mask_type == 'random_bbox':
             bboxs = []
             for i in range(self.random_bbox_number):
-                bbox = InpaintDataset.random_bbox(self.resize_shape, self.random_bbox_margin, self.random_bbox_shape)
+                bbox = InpaintDataset.random_bbox(self.resize_shape, self.random_bbox_margin, self.random_bbox_size)
                 bboxs.append(bbox)
         elif mask_type == 'random_free_form':
             mask = InpaintDataset.random_ff_mask(self.random_ff_setting)
