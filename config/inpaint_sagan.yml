@@ -11,9 +11,12 @@ MODEL_RESTORE: '' #'201809200859_full_model_places2_256/epoch_1_ckpt.pth.tar'  #
 #overall setting
 GAN: 'sn_pgan'  # 'dcgan', 'lsgan', 'wgan_gp', 'one_wgan_gp'
 PRETRAIN_COARSE_NETW5ORK: False
+RECON_TYPE: 'slc'  # 'cloud', 'shadow', 'slc'
+DIS_MODE: 'cat'  # 'cat', 'mix'
 IMG_SHAPES: [256, 256]
-RANDOM_BBOX_SHAPE: [32, 32]
-RANDOM_BBOX_MARGIN: [64, 64]
+LOCAL_DIS_SIZE: [128, 128]
+RANDOM_BBOX_SIZE: [128, 128] # could be any size
+RANDOM_BBOX_MARGIN: [32, 32]
 BATCH_SIZE: 10
 RANDOM_SEED: False
 PADDING: 'SAME'
@@ -49,6 +52,8 @@ STATIC_VIEW_SIZE: 100
 # loss
 AE_LOSS: True
 L1_LOSS: True
+PERC_LOSS_ALPHA: 5
+STYLE_LOSS_ALPHA: 120
 GLOBAL_DCGAN_LOSS_ALPHA: 1.
 GLOBAL_WGAN_LOSS_ALPHA: 1.
 GAN_LOSS_ALPHA: 0.005  # dcgan: 0.0008, wgan: 0.0005, onegan: 0.001

@@ -16,9 +16,10 @@ NETWORK_TYPE: "sa_gated" #"l2h_unet" #"l2h_unet"
 GAN: 'sn_pgan'  # 'dcgan', 'lsgan', 'wgan_gp', 'one_wgan_gp'
 
 IMG_SHAPES: [256, 256]
-RANDOM_BBOX_SHAPE: [32, 32]
-RANDOM_BBOX_MARGIN: [64, 64]
-BATCH_SIZE: 6
+LOCAL_DIS_SIZE: [128, 128]
+RANDOM_BBOX_SIZE: [128, 128] # could be any size
+RANDOM_BBOX_MARGIN: [32, 32]
+BATCH_SIZE: 10
 RANDOM_SEED: False
 PADDING: 'SAME'
 BATCH_NORM: True
