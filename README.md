@@ -44,5 +44,18 @@ One can also evaluate any model by running `./flops_count.py`.
 * One can train the model on other data and settings in `./config/inpaint_sagan.yml`.
 * We'll upload a pretrained model asap.
 
+## Citation
+If you find this work useful for your research, please cite us:
+```
+@article{shao2020context,
+  title={Context-based multiscale unified network for missing data reconstruction in remote sensing images},
+  author={Shao, Mingwen and Wang, Chao and Wu, Tianjun and Meng, Deyu and Luo, Jiancheng},
+  journal={IEEE Geoscience and Remote Sensing Letters},
+  volume={19},
+  pages={1--5},
+  year={2020}
+}
+```
+
 ## Contact
 Please contact me if there is any question. (Chao Wang oliversavealien@gmail.com)
